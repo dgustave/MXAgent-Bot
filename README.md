@@ -8,7 +8,6 @@
 -->
 
 
--->
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
@@ -217,7 +216,7 @@ Project Link: [https://github.com/dgustave/MXISOAGENT](https://github.com/dgusta
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-Use this space to list resources you find helpful and would like to give credit to. I've included a few of my favorites to kick things off!
+Use this link to get a list resources you might find helpful. It also contains a list of resources I would like to give credit to. 
 
 * [REFRENCES](https://github.com/dgustave/MXISOAGENT/references/references.txt)
 
