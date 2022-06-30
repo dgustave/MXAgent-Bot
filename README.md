@@ -21,7 +21,7 @@
 <br /> 
 <div align="center">
   <a href="https://github.com/dgustave/MXISOAGENT">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="references/imgs/mxisoagent.com.png" alt="Logo" width="500" height="250">
   </a>
 
   <h3 align="center">MXISOAGENT Datapump Simulator</h3>
@@ -140,10 +140,15 @@ _Below is an example of how you can instruct your audience on installing and set
 This space is used to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
 
 _For examples, please refer to the [Documentation]("https://github.com/dgustave/MXISOAGENT". After completing installations. 
+
+   Use environment verses downloading all dependencies
+   ```sh
+   pipenv shell 
+   ```
    
    Store MXISOAgent credentials
    ```py
-   python  mxisoagent -i
+   python  mxisoagent/setup.py -i
    ```
    
    Store MXISOAgent csv's from partners/portfolios in this directory and label appropiately for later use. 
@@ -153,7 +158,7 @@ _For examples, please refer to the [Documentation]("https://github.com/dgustave/
 
    Run MXISOAgent to start simulated datapump process
    ```py
-   python  mxisoagent
+   python  mxisoagent/datapump.py
    ```
 
 
@@ -237,4 +242,4 @@ Use this link to get a list resources you might find helpful. It also contains a
 [license-url]: https://github.com/dgustave/MXISOAGENT/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: [https://linkedin.com/in/othneildrew](https://www.linkedin.com/in/donleygustave/)
-[product-screenshot]: references/imgs/mxisoagent.png
+[product-screenshot]: references/imgs/mxa.jpg

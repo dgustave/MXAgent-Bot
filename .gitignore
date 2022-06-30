@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# bin generated folder 
+/bin 
+
+# remove .bin ext
+.bin
