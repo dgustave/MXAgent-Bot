@@ -34,17 +34,18 @@ class Mxisoagent:
         self.start_time = start_time
         self.USERNAME = USERNAME
         self.PASSWORD = PASSWORD 
-        self.modpath = os.getcwd()
+        self.modpath = str(os.getcwd())
         self.datapath = f'{self.modpath}/data'
+        print(self.datapath)
         self.loginAttempts = 0 
         self.modal_popups = 0
         if self.default == 'chrome':
-            self.chrome_driver_path = '/opt/homebrew/bin/chromedriver'
+            self.chrome_driver_path = conf.chrome
             if self.window == 'show': 
                 self.driver = webdriver.Chrome(self.chrome_driver_path)
                 self.soup = BeautifulSoup(self.driver.page_source, 'html.parser')
                 self.driver.maximize_window()
-            else: 
+            elif self.window == 'hide':
                 chrome_options = Options()
                 chrome_options.add_argument("--disable-extensions")
                 chrome_options.add_argument("--disable-gpu")
@@ -53,12 +54,12 @@ class Mxisoagent:
                 self.soup = BeautifulSoup(self.driver.page_source, 'html.parser')
 
         if self.default == 'firefox': 
-            self.firefox_driver_path = '/opt/homebrew/bin/firefox'
+            self.firefox_driver_path = conf.gecko
             if self.window == 'show': 
                 self.driver = webdriver.Firefox(executable_path=self.firefox_driver_path)
                 self.soup = BeautifulSoup(self.driver.page_source, 'html.parser')
                 self.driver.maximize_window()
-            else: 
+            elif self.window == 'hide': 
                 options = webdriver.FirefoxOptions()
                 options.headless = True
                 self.driver = webdriver.Firefox(executable_path=self.firefox_driver_path, options=options)

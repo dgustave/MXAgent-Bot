@@ -1,2 +1,2 @@
 from config.config import Config
-from config.setup import setup
+from config.setup import Setup

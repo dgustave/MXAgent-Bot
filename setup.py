@@ -1,5 +1,8 @@
-from config import setup 
+from config import Setup 
 
 
 if __name__ == '__main__':
-    setup()
+    setup = Setup()
+    setup.get_arg()
+    setup.implement_arg()
+    
