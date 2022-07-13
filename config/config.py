@@ -8,8 +8,8 @@ class Config:
         self.encrypts = Encrypts() 
         self.config = config 
         config.read('driver.ini')
-        self.chrome = config['DEFAULT']['CHROME_PATH']
-        self.gecko = config['DEFAULT']['GECKO_PATH']
+        self.chrome = self.config['DEFAULT']['CHROME_PATH']
+        self.gecko = self.config['DEFAULT']['GECKO_PATH']
         reveal = self.encrypts.authorize() 
         rev = reveal.split()
         self.USERNAME = str(rev[0])

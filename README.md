@@ -142,15 +142,27 @@ This space is used to show useful examples of how a project can be used. Additio
 _For examples, please refer to the [Documentation]("https://github.com/dgustave/MXISOAGENT". After completing installations. 
 
    Use environment verses downloading all dependencies
+
+
+   For mac users comment out dependencies as needed. Assuming you have homebrew and anaconda/python installed some parts of the script are commented out.
    ```sh
-   pipenv shell 
+   sh setup.sh
    ```
    
    Store MXISOAgent credentials
    ```py
    python  mxisoagent/setup.py -i
    ```
-   
+
+   Store MXISOAgent credentials
+   ```py
+   python  mxisoagent/setup.py -e
+   ```
+
+   ```sh
+   pipenv shell 
+   ```
+
    Store MXISOAgent csv's from partners/portfolios in this directory and label appropiately for later use. 
    ```
    mxisoagent/data/external/ 

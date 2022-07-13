@@ -36,9 +36,9 @@ class Mxisoagent:
         self.PASSWORD = PASSWORD 
         self.modpath = str(os.getcwd())
         self.datapath = f'{self.modpath}/data'
-        print(self.datapath)
         self.loginAttempts = 0 
         self.modal_popups = 0
+        self.screenshots = 0
         if self.default == 'chrome':
             self.chrome_driver_path = conf.chrome
             if self.window == 'show': 
@@ -75,9 +75,15 @@ class Mxisoagent:
         Check to see if you are already signed in to prevent lockouts. 
         """
         try:
-            WebDriverWait(self.driver, 2).until(EC.presence_of_element_located((By.XPATH, '/html/body/table/tbody/tr[1]/td/div[1]/div/div[3]/input[1]'))).send_keys(mid)
+            init_mid = '0'
+            fake_mid = '12345'
+            WebDriverWait(self.driver, 2).until(EC.presence_of_element_located((By.XPATH, '/html/body/table/tbody/tr[1]/td/div[1]/div/div[3]/input[1]'))).send_keys(init_mid)
             WebDriverWait(self.driver, 2).until(EC.element_to_be_clickable((By.XPATH, '/html/body/table/tbody/tr[1]/td/div[1]/div/div[3]/input[2]'))).click()
-            print("MXISOAGENT: sign on complete.")
+            time.sleep(2)
+            WebDriverWait(self.driver, 2).until(EC.presence_of_element_located((By.XPATH, '/html/body/table/tbody/tr[1]/td/div[1]/div/div[3]/input[1]'))).send_keys(fake_mid)
+            WebDriverWait(self.driver, 2).until(EC.element_to_be_clickable((By.XPATH, '/html/body/table/tbody/tr[1]/td/div[1]/div/div[3]/input[2]'))).click()
+            time.sleep(2)
+            print("MXISOAGENT: Already signed in.")
             return True
         except:
             return False
@@ -132,10 +138,18 @@ class Mxisoagent:
         if os.path.exists(f'{self.datapath}/external/{filename}.csv'): 
             filepath = f'{self.datapath}/external/{filename}.csv'
             df = pd.read_csv(f'{self.datapath}/external/{filename}.csv')
+            df = df[df['XMID'].notna()]
+            df = df[df.XMID != 0]
+            index = df.index
+            number_of_rows = len(index)
             print(filepath)
         elif filename.endswith('.csv'):
             if os.path.exists(f'{self.datapath}/external/{filename}'): 
                 df = pd.read_csv(f'{self.datapath}/external/{filename}')
+                df = df[df['XMID'].notna()]
+                df = df[df.XMID != 0]
+                index = df.index
+                number_of_rows = len(index)
             else: 
                 filepath = f'{self.datapath}/external/{filename}'
                 return print(f"Please add csv file to data/external directory or check for spelling errors in filename for {filepath}")
@@ -144,32 +158,38 @@ class Mxisoagent:
         under_review = []
         mid_nan = float('nan')
         for x, row in df.iterrows(): 
+            mid = str(int(row.XMID))
             try: 
-                mid = str(int(row.XMID))
                 WebDriverWait(self.driver, 4).until(EC.presence_of_element_located((By.XPATH, '/html/body/table/tbody/tr[1]/td/div[1]/div/div[3]/input[1]'))).send_keys(mid)
                 WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.XPATH, '/html/body/table/tbody/tr[1]/td/div[1]/div/div[3]/input[2]'))).click()
                 WebDriverWait(self.driver, 4).until(EC.element_to_be_clickable((By.XPATH, '/html/body/table/tbody/tr[2]/td/div[2]/form/div[9]/div[1]/div/table/tbody/tr/td[2]/a'))).click()
                 WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.XPATH, '/html/body/table/tbody/tr[2]/td/div[2]/form/div[9]/table/tbody/tr/td/div[1]/div[5]/table/tbody/tr/td[3]/div'))).click()
             except Exception as e:
-                if mid != mid_nan: 
-                    under_review.append(mid)
+                try: 
                     self.popups()
-                    try: 
-                        WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, '/html/body/table/tbody/tr[2]/td/div[2]/form/div[9]/table/tbody/tr/td/div[1]/div[5]/table/tbody/tr/td[3]/div'))).click()
-                        
-                    except:
-                        pass
-                pass
+                    WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.XPATH, '/html/body/table/tbody/tr[2]/td/div[2]/form/div[9]/table/tbody/tr/td/div[1]/div[5]/table/tbody/tr/td[3]/div'))).click()
+                except: 
+                    if mid != mid_nan:
+                        under_review.append(mid)
+                        self.driver.get_screenshot_as_file("/references/imgs/review/{filename}_{mid}.png")
+                        self.screenshots += 1
+                        self.logger.error(f"Error: {e} - Runtime: {(time.time() - self.start_time)}")
+                        time.sleep(2)
             finally: 
                 self.driver.back()
-                time.sleep(4)
+                time.sleep(3)
         self.driver.quit()
         underwriting_df = pd.DataFrame(under_review)
+        self.logger.info(f"Login Attempts: {self.loginAttempts} - Popups: {self.modal_popups} - Runtime: {(time.time() - self.start_time)} - Screenshoots: {self.screenshots} - Total Records Reviewed: {number_of_rows}")
+        time.sleep(10)
         if underwriting_df.empty == True: 
             pass 
         else: 
-            underwriting_df.to_csv(f'{self.datapath}/processed/{filename}_underwriting_mids_review.csv', index=False)
-            self.logger.info(f"Login Attempts: {self.loginAttempts} Popups: {self.modal_popups} Runtime: {(time.time() - self.start_time)}")
+            underwriting_df.to_csv(f'{self.datapath}/processed/{filename}_review.csv', index=False)
+
+        
+    
+            
         
 
 if __name__ == '__main__':

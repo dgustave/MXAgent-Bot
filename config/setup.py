@@ -28,38 +28,39 @@ class Setup:
         self.parser.add_argument("-p", "--PASSWORD", action='store_true', help = "Initialize PASSWORD")
         self.parser.add_argument("-i", "--Initialize", action='store_true', help = "Add initial username and password")
         self.parser.add_argument("-e", "--ENV", action='store_true', help = "Add pipenv and run initial requirements.txt")
-        # self.parser.add_argument("-w", "--WINDOWS", action='store_true', help = "Add pipenv and run initial requirements.txt")
-        # self.parser.add_argument("-m", "--MAC", action='store_true', help = "Add pipenv and run initial requirements.txt")
-    def implement_arg(self, default=input("Operating System Name (windows or mac?):")): 
+
+    def implement_arg(self): 
+        default=input("Operating System Name (windows or mac?):")
         args = self.parser.parse_args()
         if default == 'windows':
             sh_lines = ["#!/bin/bash", 
             "python3 -m pip install --upgrade pip", 
-            "pip install -U pyinstaller", 
             "pipenv install Pipfile"]
             with open(f"{self.modpath}/setup.sh", 'w') as write_sh:  
                 write_sh.writelines('\n'.join(sh_lines))
             write_sh.close()
             self.config.read('driver.ini')
             config['DEFAULT']['CHROME_PATH'] = '/drivers/chromedriver.exe'
-            config['DEFAULT']['GECKO_PATH'] = '/drivers/geckodriver.exe'   # create
-            with open('driver.ini', 'w') as configfile:    # save
+            config['DEFAULT']['GECKO_PATH'] = '/drivers/geckodriver.exe'
+            with open('driver.ini', 'w') as configfile:
                 config.write(configfile)
             configfile.close()
         if default == 'mac': 
-            sh_lines = ["/bin/bash -c '$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)'",
-                        "brew install wget",
-                        "brew install --cask anaconda",
+            sh_lines = ["#!/bin/bash", 
+                        "#/bin/bash -c '$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)'",
+                        "#brew install wget",
+                        "#brew install --cask anaconda",
                         "brew install --cask chromedriver",
                         "brew install --cask firefox"
-                        ]
+                        "python3 -m pip install --upgrade pip", 
+                        "pipenv install Pipfile"]
             with open(f"{self.modpath}/setup.sh", 'w') as write_sh:  
                 write_sh.writelines('\n'.join(sh_lines))
             write_sh.close()
             self.config.read('driver.ini')
             config['DEFAULT']['CHROME_PATH'] = '/opt/homebrew/bin/chromedriver'
-            config['DEFAULT']['GECKO_PATH'] = '/opt/homebrew/bin/firefox'   # create
-            with open('driver.ini', 'w') as configfile:    # save
+            config['DEFAULT']['GECKO_PATH'] = '/opt/homebrew/bin/firefox'
+            with open('driver.ini', 'w') as configfile:
                 config.write(configfile)
             configfile.close()
 

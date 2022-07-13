@@ -9,7 +9,8 @@ class Encrypts:
     Bin is created upon setup and store secure files in this directory. 
     These files can be overwritten if you rerun the intial setup. 
     """
-    def __init__(self, usr = input('Username:')): 
+    def __init__(self): 
+        usr = input('Username:')
         self.modpath = os.path.dirname(os.path.abspath(sys.argv[0]))
         if not os.path.exists(f'{self.modpath}/bin/usr/{usr}'):
             self.modloc = os.makedirs(f'{self.modpath}/bin/usr/{usr}') 
