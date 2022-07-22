@@ -43,7 +43,10 @@ class Mxisoagent:
         if self.default == 'chrome':
             self.chrome_driver_path = conf.chrome
             if self.window == 'show': 
-                self.driver = webdriver.Chrome(self.chrome_driver_path)
+                chrome_options = Options()
+                prefs = {"download.default_directory" : f"{self.datapath}/external"}
+                chrome_options.add_experimental_option("prefs",prefs)
+                self.driver = webdriver.Chrome(executable_path=self.chrome_driver_path, options=chrome_options)
                 self.soup = BeautifulSoup(self.driver.page_source, 'html.parser')
                 self.driver.maximize_window()
             elif self.window == 'hide':
@@ -51,7 +54,7 @@ class Mxisoagent:
                 chrome_options.add_argument("--disable-extensions")
                 chrome_options.add_argument("--disable-gpu")
                 chrome_options.add_argument("--headless")
-                prefs = {"download.default_directory" : f"{self.datpath}/external"}
+                prefs = {"download.default_directory" : f"{self.datapath}/external"}
                 chrome_options.add_experimental_option("prefs",prefs)
                 self.driver = webdriver.Chrome(executable_path=self.chrome_driver_path, options=chrome_options)
                 self.soup = BeautifulSoup(self.driver.page_source, 'html.parser')
@@ -59,7 +62,9 @@ class Mxisoagent:
         if self.default == 'firefox': 
             self.firefox_driver_path = conf.gecko
             if self.window == 'show': 
-                self.driver = webdriver.Firefox(executable_path=self.firefox_driver_path)
+                options = webdriver.FirefoxOptions()
+                prefs = {"download.default_directory" : f"{self.datapath}/external"}
+                self.driver = webdriver.Firefox(executable_path=self.firefox_driver_path, options=options)
                 self.soup = BeautifulSoup(self.driver.page_source, 'html.parser')
                 self.driver.maximize_window()
             elif self.window == 'hide': 
@@ -67,7 +72,7 @@ class Mxisoagent:
                 options.add_argument("--disable-extensions")
                 options.add_argument("--disable-gpu")
                 options.add_argument("--headless")
-                prefs = {"download.default_directory" : f"{self.datpath}/external"}
+                prefs = {"download.default_directory" : f"{self.datapath}/external"}
                 self.driver = webdriver.Firefox(executable_path=self.firefox_driver_path, options=options)
                 self.soup = BeautifulSoup(self.driver.page_source, 'html.parser')
                         
@@ -137,14 +142,15 @@ class Mxisoagent:
     def _reformat_file(self, filename: str) -> str: 
         today = datetime.datetime.now()
         todate = today.strftime("%Y%m%d")
-        data_xls = pd.read_excel(f'{self.datapath}/external/Merchants_{todate}.xlsx', 'Sheet1', dtype=str, index_col=None)
-        data_xls.to_csv(f'{self.datapath}/external/reload.csv', encoding='utf-8', index=False)
-        time.sleep(4)
+        data_xls = pd.read_excel(f'{self.datapath}/external/Merchants_{todate}.xls', 'Sheet1', dtype=str, index_col=None)
+        time.sleep(10)
+        data_xls.to_csv(f'{self.datapath}/external/{filename}.csv', encoding='utf-8', index=False)
+        time.sleep(5)
         
     def download_merchants(self): 
         today = datetime.datetime.now()
         to_date = today.strftime("%m/%d/%Y")
-        preday = today - datetime.timedelta(days=3)
+        preday = today - datetime.timedelta(days=1)
         from_date = preday.strftime("%m/%d/%Y")
         WebDriverWait(self.driver, 6).until(EC.element_to_be_clickable((By.XPATH, '/html/body/table/tbody/tr[1]/td/div[1]/div/div[4]/div/ul/li[2]/a'))).click() 
         WebDriverWait(self.driver, 3).until(EC.presence_of_element_located((By.XPATH, '/html/body/table/tbody/tr[2]/td/div[2]/form/div[8]/div[2]/div/table/tbody/tr[2]/td[4]/table[1]/tbody/tr/td[1]/div/table/tbody/tr/td[1]/span/input[1]'))).clear() 
@@ -154,9 +160,9 @@ class Mxisoagent:
         time.sleep(3)
         WebDriverWait(self.driver, 2).until(EC.presence_of_element_located((By.ID, 'ctl00_PageContent_dateTo_dateInput_text'))).send_keys(to_date)
         WebDriverWait(self.driver, 2).until(EC.element_to_be_clickable((By.XPATH, '/html/body/table/tbody/tr[2]/td/div[2]/form/div[8]/div[2]/div/table/tbody/tr[2]/td[6]/table/tbody/tr/td[2]/div/input'))).click() 
-        time.sleep(2)
+        time.sleep(6)
         WebDriverWait(self.driver, 6).until(EC.element_to_be_clickable((By.XPATH, '/html/body/table/tbody/tr[2]/td/div[2]/form/div[9]/div[1]/div/table/thead/tr[1]/td/table/tbody/tr/td[2]/input'))).click() 
-        time.sleep(10)
+        time.sleep(20)
         self._reformat_file("merchants")
         
     def resave(self, filename = None):
@@ -205,7 +211,7 @@ class Mxisoagent:
                 except: 
                     if mid != mid_nan:
                         under_review.append(mid)
-                        self.driver.get_screenshot_as_file("/references/imgs/review/{filename}_{mid}.png")
+                        self.driver.get_screenshot_as_file("../references/imgs/review/{filename}_{mid}.png")
                         self.screenshots += 1
                         self.logger.error(f"Error: {e} - Runtime: {(time.time() - self.start_time)}")
                         time.sleep(2)
