@@ -151,12 +151,12 @@ _For examples, please refer to the [Documentation]("https://github.com/dgustave/
    
    Store MXISOAgent credentials
    ```py
-   python  mxisoagent/setup.py -i
+   python  src/setup.py -i
    ```
 
-   Store MXISOAgent credentials
+   Store MXISOAgent Env
    ```py
-   python  mxisoagent/setup.py -e
+   python  src/setup.py -e
    ```
 
    ```sh
@@ -165,12 +165,12 @@ _For examples, please refer to the [Documentation]("https://github.com/dgustave/
 
    Store MXISOAgent csv's from partners/portfolios in this directory and label appropiately for later use. 
    ```
-   mxisoagent/data/external/ 
+   mxisoagent/src/data/external/ 
    ```
 
    Run MXISOAgent to start simulated datapump process
    ```py
-   python  mxisoagent/datapump.py
+   python  src/datapump.py
    ```
 
 
